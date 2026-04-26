@@ -24,4 +24,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/auth/login/", TokenObtainPairView.as_view()),
     path("api/v1/accounts/", include("accounts.urls")),
+    path("api/v1/ledger/", include("ledger.urls")),
+    path("api/v1/payouts/", include("payouts.urls")),
 ]
