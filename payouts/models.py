@@ -14,6 +14,7 @@ class Payout(models.Model):
         Merchant, on_delete=models.CASCADE, related_name="payouts"
     )
 
+    idempotency_key = models.CharField(max_length=255)
     bank_account = models.ForeignKey(BankAccount, on_delete=models.CASCADE)
 
     amount_paise = models.BigIntegerField()
@@ -24,3 +25,6 @@ class Payout(models.Model):
 
     def __str__(self):
         return f"{self.id} - {self.amount_paise} - {self.status}"
+
+    class Meta:
+        unique_together = ("merchant", "idempotency_key")
