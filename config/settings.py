@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "accounts",
     "ledger",
     "payouts",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,5 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=6),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

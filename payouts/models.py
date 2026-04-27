@@ -10,6 +10,12 @@ class Payout(models.Model):
         ("failed", "Failed"),
     )
 
+    def __str__(self):
+        return f"{self.id} - {self.amount_paise} - {self.status}"
+
+    class Meta:
+        unique_together = ("merchant", "idempotency_key")
+
     merchant = models.ForeignKey(
         Merchant, on_delete=models.CASCADE, related_name="payouts"
     )
@@ -23,8 +29,20 @@ class Payout(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.id} - {self.amount_paise} - {self.status}"
+    retry_count = models.IntegerField(default=0)
+    last_attempt_at = models.DateTimeField(null=True, blank=True)
+    ALLOWED_TRANSITIONS = {
+        "pending": ["processing"],
+        "processing": ["completed", "failed"],
+        "completed": [],
+        "failed": [],
+    }
 
-    class Meta:
-        unique_together = ("merchant", "idempotency_key")
+    def transition_to(self, new_status):
+        allowed = self.ALLOWED_TRANSITIONS.get(self.status, [])
+
+        if new_status not in allowed:
+            raise ValueError(f"Invalid transition: {self.status} → {new_status}")
+
+        self.status = new_status
+        self.save(update_fields=["status"])

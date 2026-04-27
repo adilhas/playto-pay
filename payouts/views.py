@@ -6,7 +6,7 @@ from .models import Payout
 from accounts.models import BankAccount, Merchant
 from ledger.models import LedgerEntry
 from ledger.services import get_merchant_balance
-
+from payouts.tasks import process_payout_task
 from django.db import transaction, IntegrityError
 
 
@@ -87,7 +87,6 @@ class CreatePayoutView(APIView):
                             status="pending",
                             idempotency_key=idempotency_key,
                         )
-
                         # HOLD funds via ledger
                         LedgerEntry.objects.create(
                             merchant=locked_merchant,
@@ -95,6 +94,11 @@ class CreatePayoutView(APIView):
                             transaction_type="debit",
                             reference_type="payout",
                             reference_id=payout.id,
+                        )
+                        payout_id = payout.id
+
+                        transaction.on_commit(
+                            lambda: process_payout_task.delay(payout_id)
                         )
 
         except IntegrityError:
