@@ -10,6 +10,25 @@ from payouts.tasks import process_payout_task
 from django.db import transaction, IntegrityError
 
 
+class ListPayoutsView(APIView):
+    def get(self, request):
+        merchant = request.user.merchant
+
+        payouts = Payout.objects.filter(merchant=merchant).order_by("-id")
+
+        data = [
+            {
+                "id": p.id,
+                "amount_paise": p.amount_paise,
+                "status": p.status,
+                "created_at": p.created_at,
+            }
+            for p in payouts
+        ]
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
 class CreatePayoutView(APIView):
     def post(self, request):
         idempotency_key = request.headers.get("Idempotency-Key")
