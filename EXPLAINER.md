@@ -140,15 +140,17 @@ API → create payout (pending) → enqueue Celery task → worker processes pay
 - Scalable processing
 - Decoupled architecture
 
-### **Deployment Note**
+### **Deployment**
 
-The Django API is deployed on Render, and Redis is hosted on Redis Cloud.
+The system is deployed as a distributed architecture:
 
-Due to free-tier limitations (Render background workers are paid), the Celery worker is not deployed as a separate cloud service. Instead, it is run locally during testing and demonstration.
+- Django API → hosted on Render
+- Celery Worker → hosted on Railway
+- Redis → hosted on Redis Cloud
 
-This does not affect system correctness, as Celery communicates via Redis, allowing the worker to run independently of the API service.
+The API enqueues payout tasks to Redis, and the Celery worker (running independently) consumes and processes them asynchronously.
 
-In a production setup, the Celery worker would be deployed as a separate service alongside the API.
+This setup mirrors a real production system where background processing is handled by a separate worker service.
 
 ---
 

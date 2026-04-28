@@ -16,6 +16,7 @@ whitenoise = "*"
 dj-database-url = "*"
 python-dotenv = "*"
 djangorestframework-simplejwt = "*"
+faker = "*"
 
 [dev-packages]
 
