@@ -76,6 +76,7 @@ ROOT_URLCONF = "config.urls"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://playto-pay-frontend.vercel.app",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
