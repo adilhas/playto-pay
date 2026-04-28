@@ -141,3 +141,4 @@ SIMPLE_JWT = {
 }
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+ALLOWED_HOSTS = ["*"]
