@@ -7,7 +7,6 @@ name = "pypi"
 celery = "*"
 redis = "*"
 django-celery-beat = "*"
-django-cors-headers = "*"
 django = "*"
 djangorestframework = "*"
 gunicorn = "*"
@@ -17,6 +16,7 @@ dj-database-url = "*"
 python-dotenv = "*"
 djangorestframework-simplejwt = "*"
 faker = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

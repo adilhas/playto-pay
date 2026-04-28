@@ -15,6 +15,8 @@ import dj_database_url
 from dotenv import load_dotenv
 from datetime import timedelta
 from pathlib import Path
+from corsheaders.defaults import default_headers
+
 
 load_dotenv()
 
@@ -54,9 +56,11 @@ INSTALLED_APPS = [
     "ledger",
     "payouts",
     "django_celery_beat",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -69,6 +73,14 @@ MIDDLEWARE = [
 
 
 ROOT_URLCONF = "config.urls"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = list(default_headers) + ["authorization", "Idempotency-Key"]
 
 TEMPLATES = [
     {
