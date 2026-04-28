@@ -114,11 +114,24 @@ class CreatePayoutView(APIView):
                             reference_type="payout",
                             reference_id=payout.id,
                         )
+
+                        def enqueue_payout_task(payout_id):
+                            try:
+                                process_payout_task.delay(payout_id)
+                            except Exception as e:
+                                # Log but NEVER crash request
+                                print("Celery enqueue failed:", str(e))
+
                         payout_id = payout.id
 
                         transaction.on_commit(
-                            lambda: process_payout_task.delay(payout_id)
+                            lambda payout_id=payout_id: enqueue_payout_task(payout_id)
                         )
+                        # payout_id = payout.id
+
+                        # transaction.on_commit(
+                        #     lambda: process_payout_task.delay(payout_id)
+                        # )
 
         except IntegrityError:
             # Another request with same idempotency key won the race
